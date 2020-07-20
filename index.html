@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script><![endif]-->
+	<title>Дневники</title>
+	<meta name="description" content="Дневники пользователей Голоса" />
+	<link href="style.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://unpkg.com/golos-classic-js@0.7.42/dist/golos.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.8/sjcl.min.js"></script>
+    <script src="./app.js" defer></script>
+</head>
+
+<body onload="getCurrentPage()">
+    
+	<div class="wrapper">
+
+	<header class="header">
+<h1>Дневники Голоса</h1>
+<h2>Пользователь</h2>
+<div id="auth">
+<form>
+<p><input type="text" id="user_login" placeholder="Введите логин на Голосе"></p>
+<p><input type="password" id="user_posting" placeholder="Введите постинг ключ на Голосе"></p>
+<p><input type="button" onclick="setUserData()" value="Войти"></p>
+</form>
+</div>
+<div id="logout">Логин: <span id="account_login"></span>, <a onclick="logoutAction()"</a>Выйти</a></div>
+<div id="user_balance">Баланс донатов: <span id="tip_balance"></span>,<br>
+доступно к получению: <span id="accumulative_balance"></span> <span style="display:none;" id="get_accumulative_balance"></span></div>
+</header><!-- .header-->
+
+<nav class="menu">
+<ul><li><a href="#home" onblur="getCurrentPage(status[0])">Главная</a></li>
+<li><a href="#add_single" onsubmit="getCurrentPage(true)">Добавить запись в дневник</a></li>
+<li><a href="#my_dnevnik">Мой дневник</a></li>
+<li><a href="#subscribes" onsubmit="getCurrentPage(true)">Мои подписки</a></li>
+<li><a href="#top" onsubmit="getCurrentPage(true)">Записи дневников от разных авторов</a></li></ul>
+</nav>
+<form id="search_user">
+<p><input type="text" id="search_user" name="search_user" value="" placeholder="Логин без @"></p>
+<p><input type="button" value="Открыть" onclick="openURL(`@${this.form.search_user.value}`)"></p>
+</form>
+
+	<main class="content">
+</main><!-- .content -->
+
+	<footer class="footer">
+<p>Создатель сервиса: <a href="https://dpos.space/golos/profiles/denis-skripnik" target="_blank">Денис скрипник</a> - незрячий программист и делегат Голоса.</p>
+	</footer><!-- .footer -->
+
+</div><!-- .wrapper -->
+
+<div id="home" style="display: none;">
+<h2>Главная</h2>
+<p>Выберите в меню действие, которое хотите совершить, или введите в поле логин аккаунта.</p>
+<p>Если вы не будете писать дневник каждый день, будут пропуски, и читателям может надоесть листать пустые страницы вашего дневника в попытке дойти до записей, а значит, вы не получите донатов.</p>
+</div>
+
+<div id="add_single" style="display: none;">
+        <h2>Добавить запись дневника</h2>
+	<div class="main_form">
+        <div class="regards__container">
+            <h3 class="regards__title title">Благодарности</h3>
+            <form class="regards form" name="regards">
+                <input class="regards__input input" type="text" name="regards__input"
+                    placeholder="Введите благодарность">
+                <button class="regards__button button">Добавить</button>
+            </form>
+        </div>
+        <div class="progress__container">
+            <h3 class="regards__title title">Достижения</h3>
+            <form class="progress form" name="progress">
+                <input class="progress__input input" name="progress__input" placeholder="Введите достижения">
+                <button class="progress__button button">Добавить</button>
+            </form>
+        </div>
+        <div class="ideas__container">
+            <h3 class="regards__title title">Идеи</h3>
+            <form class="ideas form" name="ideas">
+                <input class="ideas__input input" name="ideas__input" placeholder="Введите свои мысли и идеи">
+                <button class="ideas__button button">Добавить</button>
+            </form>
+        </div>
+        <div class="plans__container">
+            <h3 class="regards__title title">Планы</h3>
+            <form class="plans form" name="plans">
+                <input class="plans__input input" name="plans__input" placeholder="Введите свои планы">
+                <button class="plans_button button">Добавить</button>
+            </form>
+        </div>
+    </div>
+    <p><input type="checkbox" id="crypt_single" placeholder="Зашифровать запись дневника"></p>
+	<button class="send-form">Сохранить</button>
+</div>
+
+<div id="subscribes" style="display: none;">
+<h1>Список подписок с возможностью отписаться</h1>
+<table id="following_table">
+<tr><th>Логин</th>
+<th>Действие</th>
+</tr>
+</table>
+</div>
+
+</body>
+</html>
