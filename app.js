@@ -53,7 +53,6 @@ checkWorkingNode();
   
   function sendDonate(author, permlink) {
 	let amount = $('input[name=donate_amount]').val();
-	window.alert(amount);
 	amount = parseFloat(amount);
 	amount = amount.toFixed(3) + ' GOLOS';
 let user = getUserData();
@@ -71,10 +70,10 @@ let user = getUserData();
 
 function openURL(location, login) {
 				history.pushState({},'','#'+location);
-				getCurrentPage(login);
+				getCurrentPage();
 }
 
-function loadContent(author, permlink) {
+function loadContent(author, permlink, login, posting_key) {
 golos.api.getContent(author, permlink, function(err, res) {
 let follow = '<span id="follow" class="terms">';
 			if(user_following.includes(author))
@@ -93,8 +92,7 @@ let follow = '<span id="follow" class="terms">';
 		content += `<h2>Запись дневника не найдена</h2>
 <p>Возможно, пользователь опубликовал запись вчера или в предыдущие дни.</p>`;
 		} else if (res.body.indexOf('{"') > -1) {
-		if (author === getUserData()[0]) {
-					let posting_key = getUserData()[1];
+		if (author === login) {
 					content += sjcl.decrypt(author + '_cryptSingle' + posting_key, res.body);
 				} else {
 					content += `<h2>К сожалению, вы не являетесь автором этой записи, а она зашифрована</h2>
@@ -146,9 +144,12 @@ function showAccountBalances(login, key) {
 	});
 }
 
-function getCurrentPage(login) {
+function getCurrentPage() {
+let user_data = getUserData();
+let login = user_data[0];
+let posting_key = getUserData[1];
 var hash = location.hash.substring(1);
-    if (hash === '') {
+if (hash === '') {
         $('.content').html($('#home').html());
 	} else if (hash === 'my_dnevnik') {
 		openURL(`@${login}`, login);
@@ -174,16 +175,16 @@ content += `<li><a href="#@${item.author}/${item.permlink}">${item.title}</a> о
 		let dnevnik = hash.split('@')[1];
 if (dnevnik.indexOf('/') > -1) {
 	let single = dnevnik.split('/');
-	loadContent(single[0], single[1]);
+	loadContent(single[0], single[1], login, posting_key);
 } else {
 	let author = dnevnik;
 let permlink = new Date().toISOString().split('T')[0];
-loadContent(author, permlink);
+loadContent(author, permlink, login, posting_key);
 }
 	} else {
         let id_in_page = document.getElementById(hash);
-		if (id_in_page && login) {
-    $('.content').html($(id_in_page).html());
+        if (id_in_page && login) {
+            $('.content').html($(id_in_page).html());
         }
     }
 }
@@ -227,7 +228,7 @@ posting = sjcl.encrypt('dnevnik_golos_' + user + '_postingKey', posting_field);
     localStorage.setItem("dnevnik_login", user);
     localStorage.setItem("dnevnik_posting", posting);
 getUserData();
-getCurrentPage(user);
+getCurrentPage();
 }
 }
 }
@@ -244,7 +245,7 @@ $('#auth').css('display', 'block');
 	window.addEventListener('hashchange', function(e) {
 var status = getUserData();
 	if (status[0] && status[1]) {
-	getCurrentPage(status[0]);
+	getCurrentPage();
 	}
   });
   
@@ -297,8 +298,11 @@ window.onFollowingLoaded = function(following, login, posting) {
 
 function getFollowingMe()
 {
-	let user = getUserData();
-	golos.api.getFollowing(user[0], '', 'blog', 100, function(err, data){
+        let user = getUserData();
+if (user[0] && user[1]) {
+    getCurrentPage();
+}
+        golos.api.getFollowing(user[0], '', 'blog', 100, function(err, data){
 		if(data)
 		{
 			var i = 0;
