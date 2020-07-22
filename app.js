@@ -510,7 +510,7 @@ for (let plan of plansArray) {
 `;
 }
 data += `</ol>
-<p>Запись дневника создана при помощи Golos-dnevnik. от @denis-skripnik</p>`;
+<p>Запись дневника создана при помощи <a href="https://denis-skripnik.github.io/golos-dnevnik" target="_blank">Golos-dnevnik</a> от @denis-skripnik</p>`;
 let user_data = getUserData();
 var author = user_data[0];
 var wif = user_data[1];
