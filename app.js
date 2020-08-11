@@ -520,6 +520,7 @@ var permlink = new Date().toISOString().split('T')[0];
 var title = 'Дневник ' + permlink;
 var jsonMetadata = '{"app": "golos-dnevnik", "version": 1.0}';
 	if (crypt.checked) {
+parentPermlink = 'golos-dnevnik-crypt'
 	data = sjcl.encrypt(author + '_cryptSingle' + wif, data);
 	}
 golos.broadcast.comment(wif, parentAuthor, parentPermlink, author, permlink, title, data, jsonMetadata, function(err, result) {
